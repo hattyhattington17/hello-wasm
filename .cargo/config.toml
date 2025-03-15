@@ -1,2 +1,2 @@
 [build]
-rustflags = ["-C", "target-feature=+simd128"]
+rustflags = ["-C", "target-feature=+simd128", "-C", "link-args=--import-memory"]

@@ -1,11 +1,13 @@
 
+const memory = new WebAssembly.Memory({ initial: 65536, maximum: 65536 });
 const { instance } = await WebAssembly.instantiateStreaming(fetch('hello_wasm.wasm'), {
     env: {
         js_console_log: (x) => { console.log(x); },
+        memory
     }
 });
 
-const { inner_product_simd, inner_product_scalar, memory } = instance.exports;
+const { inner_product_simd, inner_product_scalar } = instance.exports;
 
 // must set (memory (;0;) 65536) in the wasm file 
 console.log(`memory.buffer.byteLength: ${memory.buffer.byteLength}`);
@@ -34,5 +36,5 @@ let scalar = inner_product_scalar(0, length * 4, length);
 const scalarEnd = performance.now();
 
 console.log(`SIMD inner product ${simd}, time to compute: ${simdEnd - simdStart} ms`);
-console.log(`Scalar inner product ${scalar}, time to compute: ${(scalarStart - scalarEnd)} ms`);
+console.log(`Scalar inner product ${scalar}, time to compute: ${(scalarEnd - scalarStart)} ms`);
 
