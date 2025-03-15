@@ -18,4 +18,4 @@ pub fn get_meaning_of_lifes() -> u32 {
 mod wasm_simd;
 
 #[cfg(all(target_family = "wasm", target_feature = "simd128"))]
-pub use wasm_simd::simd_pointwise_add;
+pub use wasm_simd::*;

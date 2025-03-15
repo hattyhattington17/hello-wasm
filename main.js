@@ -1,22 +1,38 @@
-const { module, instance } = await WebAssembly.instantiateStreaming(fetch('hello_wasm.wasm'), {
+
+const { instance } = await WebAssembly.instantiateStreaming(fetch('hello_wasm.wasm'), {
     env: {
-        js_console_log: (x) => { console.log(x); }
+        js_console_log: (x) => { console.log(x); },
     }
 });
 
-instance.exports.get_meaning_of_life();
+const { inner_product_simd, inner_product_scalar, memory } = instance.exports;
 
-// Allocate memory for input vectors and result vector
-// arrays must be allocated in wasm linear memory for the module to read them
-const a = new Float32Array(instance.exports.memory.buffer, 0, 4);
-const b = new Float32Array(instance.exports.memory.buffer, 16, 4);
-const result = new Float32Array(instance.exports.memory.buffer, 32, 4);
+// must set (memory (;0;) 65536) in the wasm file 
+console.log(`memory.buffer.byteLength: ${memory.buffer.byteLength}`);
+if (memory.buffer.byteLength !== 4294967296) {
+    throw new Error('must set (memory (;0;) 65536) in the wat file, then convert back to wasm ');
+}
+const length = 500_000_000;
 
-// Initialize input vectors
-a.set([1.0, 2.0, 3.0, 4.0]);
-b.set([5.0, 6.0, 7.0, 8.0]);
+// Create a DataView for the WebAssembly memory buffer
+const dataView = new DataView(memory.buffer);
 
-// pointwise add vectors a and b and store result in result
-instance.exports.simd_pointwise_add(a.byteOffset, b.byteOffset, result.byteOffset);
-console.log('Result:', result.at(0), result.at(1), result.at(2), result.at(3));
+// initialize two i32 arrays in linear memory with random values
+for (let i = 0; i < length; i++) {
+    dataView.setInt32(i * 4, Math.floor(Math.random() * 10), true); // true for little-endian
+    dataView.setInt32((length + i) * 4, Math.floor(Math.random() * 10), true); // true for little-endian
+}
+
+// Benchmark the SIMD inner product
+const simdStart = performance.now();
+let simd = inner_product_simd(0, length * 4, length);
+const simdEnd = performance.now();
+
+// Benchmark the scalar inner product
+const scalarStart = performance.now();
+let scalar = inner_product_scalar(0, length * 4, length);
+const scalarEnd = performance.now();
+
+console.log(`SIMD inner product ${simd}, time to compute: ${simdEnd - simdStart} ms`);
+console.log(`Scalar inner product ${scalar}, time to compute: ${(scalarStart - scalarEnd)} ms`);
 
