@@ -3,6 +3,7 @@
   (type (;1;) (func))
   (type (;2;) (func (result i32)))
   (type (;3;) (func (param i32 i32 i32) (result i32)))
+  (import "env" "memory" (memory (;0;) 16))
   (import "env" "js_console_log" (func $js_console_log (type 0)))
   (func $get_meaning_of_life (type 1)
     i32.const 42
@@ -15,20 +16,12 @@
     local.set 3
     block  ;; label = @1
       local.get 2
-      i32.const 3
-      i32.add
-      i32.const 7
+      i32.const 4
       i32.lt_u
       br_if 0 (;@1;)
       local.get 2
-      i32.const 4
-      i32.div_s
-      local.tee 3
-      i32.const 1
-      local.get 3
-      i32.const 1
-      i32.gt_u
-      select
+      i32.const 2
+      i32.shr_u
       local.set 2
       i32.const 0
       local.set 3
@@ -178,11 +171,9 @@
     end
     local.get 3)
   (table (;0;) 1 1 funcref)
-  (memory (;0;) 65536)
   (global $__stack_pointer (mut i32) (i32.const 1048576))
   (global (;1;) i32 (i32.const 1048576))
   (global (;2;) i32 (i32.const 1048576))
-  (export "memory" (memory 0))
   (export "get_meaning_of_life" (func $get_meaning_of_life))
   (export "get_meaning_of_lifes" (func $get_meaning_of_lifes))
   (export "inner_product_simd" (func $inner_product_simd))
