@@ -21,5 +21,5 @@ wasm2wat target/wasm32-unknown-unknown/release/hello_wasm.wasm -o hello_wasm.wat
 ```
 - Convert a WebAssembly Text Format file into its executable Wasm binary representation
 ```shell
-wat2wasm hello_wasm.wat  -o hello_wasm.wasm
+wat2wasm hello_wasm.wat -o hello_wasm.wasm --debug-names
 ```
