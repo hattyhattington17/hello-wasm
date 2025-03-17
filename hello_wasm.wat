@@ -1,7 +1,7 @@
 (module $hello_wasm.wasm
   (type (;0;) (func (param i32)))
   (type (;1;) (func))
-  (type (;2;) (func (param i32 i32 i32) (result i32)))
+  (type (;2;) (func (param i32 i32 i32) (result i64)))
   (import "env" "memory" (memory (;0;) 16))
   (import "env" "js_console_log" (func $js_console_log (type 0)))
   (func $get_meaning_of_life (type 1)
@@ -27,12 +27,12 @@
         br_if 0 (;@2;)
       end
     end)
-  (func $inner_product (type 2) (param i32 i32 i32) (result i32)
-    (local i32 i32 i32 i32 i32 i32)
+  (func $inner_product (type 2) (param i32 i32 i32) (result i64)
+    (local i32 i32 i64 i32 i32 i32)
     block  ;; label = @1
       local.get 2
       br_if 0 (;@1;)
-      i32.const 0
+      i64.const 0
       return
     end
     local.get 2
@@ -46,71 +46,71 @@
         i32.ge_u
         br_if 0 (;@2;)
         i32.const 0
-        local.set 2
-        i32.const 0
         local.set 4
+        i64.const 0
+        local.set 5
         br 1 (;@1;)
       end
       local.get 2
       i32.const -4
       i32.and
-      local.set 5
-      i32.const 0
       local.set 6
+      i64.const 0
+      local.set 5
       i32.const 0
       local.set 2
       i32.const 0
       local.set 4
       loop  ;; label = @2
         local.get 1
-        local.get 6
+        local.get 2
         i32.add
         local.tee 7
         i32.const 12
         i32.add
-        i32.load
+        i64.load32_u
         local.get 0
-        local.get 6
+        local.get 2
         i32.add
         local.tee 8
         i32.const 12
         i32.add
-        i32.load
-        i32.mul
+        i64.load32_u
+        i64.mul
         local.get 7
         i32.const 8
         i32.add
-        i32.load
+        i64.load32_u
         local.get 8
         i32.const 8
         i32.add
-        i32.load
-        i32.mul
+        i64.load32_u
+        i64.mul
         local.get 7
         i32.const 4
         i32.add
-        i32.load
+        i64.load32_u
         local.get 8
         i32.const 4
         i32.add
-        i32.load
-        i32.mul
+        i64.load32_u
+        i64.mul
         local.get 7
-        i32.load
+        i64.load32_u
         local.get 8
-        i32.load
-        i32.mul
+        i64.load32_u
+        i64.mul
+        local.get 5
+        i64.add
+        i64.add
+        i64.add
+        i64.add
+        local.set 5
         local.get 2
-        i32.add
-        i32.add
-        i32.add
+        i32.const 16
         i32.add
         local.set 2
         local.get 6
-        i32.const 16
-        i32.add
-        local.set 6
-        local.get 5
         local.get 4
         i32.const 4
         i32.add
@@ -129,24 +129,24 @@
       i32.shl
       local.tee 7
       i32.add
-      local.set 6
+      local.set 2
       local.get 1
       local.get 7
       i32.add
       local.set 7
       loop  ;; label = @2
         local.get 7
-        i32.load
-        local.get 6
-        i32.load
-        i32.mul
+        i64.load32_u
         local.get 2
-        i32.add
-        local.set 2
-        local.get 6
+        i64.load32_u
+        i64.mul
+        local.get 5
+        i64.add
+        local.set 5
+        local.get 2
         i32.const 4
         i32.add
-        local.set 6
+        local.set 2
         local.get 7
         i32.const 4
         i32.add
@@ -158,7 +158,7 @@
         br_if 0 (;@2;)
       end
     end
-    local.get 2)
+    local.get 5)
   (table (;0;) 1 1 funcref)
   (global $__stack_pointer (mut i32) (i32.const 1048576))
   (global (;1;) i32 (i32.const 1048576))

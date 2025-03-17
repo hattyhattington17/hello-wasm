@@ -1,5 +1,5 @@
 // create the WebAssembly memory and supply it to the module as part of the importObject
-const memory = new WebAssembly.Memory({ initial: 65536, maximum: 65536 });
+const memory = new WebAssembly.Memory({ initial: 65536 });
 const { instance } = await WebAssembly.instantiateStreaming(fetch('hello_wasm.wasm'), {
     env: {
         js_console_log: (x) => { console.log(x); },
@@ -19,9 +19,20 @@ for (let i = 0; i < n; i++) {
     dataView.setUint32((n + i) * 4, Math.floor(Math.random() * 10), true);
 }
 
-/********** Compute the inner product **********/
+/********** Compute the inner product in JavaScript using BigInt **********/
+const jsStart = performance.now();
+let jsProduct = 0n;
+for (let i = 0; i < n; i++) {
+    jsProduct += BigInt(dataView.getUint32(i * 4, true)) * BigInt(dataView.getUint32((n + i) * 4, true));
+}
+const jsEnd = performance.now();
+
+console.log(`inner product ${jsProduct}, time to compute: ${jsEnd - jsStart} ms`);
+
+/********** Compute the inner product in Wasm **********/
 const wasmStart = performance.now();
 let wasmProduct = instance.exports.inner_product(0, n * 4, n);
 const wasmEnd = performance.now();
 
-console.log(`inner product ${wasmProduct}, time to compute: ${wasmEnd - wasmStart} ms`); 
+console.log(`inner product ${wasmProduct}, time to compute: ${wasmEnd - wasmStart} ms`);
+
