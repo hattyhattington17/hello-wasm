@@ -1,4 +1,7 @@
-# Hello-Wasm Example Application
+# Hello-Wasm SIMD Application
+Demonstrates compiling a Rust library into WebAssembly with both SIMD and scalar implementations for computing the inner product, along with a JavaScript frontend for benchmarking.
+
+# Running
 - Compile the Rust library into wasm and copy the Wasm binary into the project root
 ```shell
 rustup target add wasm32-unknown-unknown
@@ -23,3 +26,4 @@ wasm2wat target/wasm32-unknown-unknown/release/hello_wasm.wasm -o hello_wasm.wat
 ```shell
 wat2wasm hello_wasm.wat  -o hello_wasm.wasm
 ```
+ 
